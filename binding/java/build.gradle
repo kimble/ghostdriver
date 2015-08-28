@@ -31,9 +31,12 @@ apply plugin: "eclipse"
 apply plugin: "maven"
 apply plugin: "signing"
 
+plugins {
+    id "de.undercouch.download" version "2.0.0"
+}
+
 task wrapper(type: Wrapper) {
-    gradleVersion   = "2.5"
-    jarFile         = "gradle/gradle-wrapper.jar"
+    gradleVersion   = "2.6"
 }
 
 repositories {
@@ -55,12 +58,15 @@ ext.projectArtefactDir      = "jars/"
 ext.projectMainClass        = "org.openqa.selenium.phantomjs.PhantomJSDriver"
 ext.projectCreator          = "Ivan De Marino (https://github.com/detro)"
 
-ext.seleniumVersion         = "2.44.0"
+ext.seleniumVersion         = "2.47.1"
 
 dependencies {
     ["selenium-java", "selenium-remote-driver"].each {
         compile "org.seleniumhq.selenium:$it:$seleniumVersion"
     }
+
+    testCompile 'com.nanohttpd:nanohttpd:2.1.1',
+                'junit:junit:4.12'
 }
 
 // Forces Java 6 compile source/target
@@ -122,6 +128,12 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     }
 }
 
+// Download phantomjs
+task downloadPhantomJs(type: Download) {
+    src 'http://www.example.com/index.html'
+    dest buildDir
+}
+
 // Make all Jars
 task jars {
     dependsOn jar, sourceJar, javadocJar
@@ -157,7 +169,7 @@ signing {
 //    ossrhUsername=<OSS Sonatype Username>
 //    ossrhPassword=<OSS Sonatype Password>
 //
-uploadArchives {
+/*uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment {
@@ -212,3 +224,4 @@ uploadArchives {
         }
     }
 }
+*/
